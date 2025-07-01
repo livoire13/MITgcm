@@ -69,7 +69,7 @@ C     Initialize arrays in common blocks :
          ENDDO
          DO j=1-OLy,sNy+OLy
           DO i=1-OLx,sNx+OLx
-           surfaceForcingPTr(i,j,bi,bj,iTracer) = 0. _d 0
+           surfaceForcingPTr(i,j,bi,bj,iTracer) =0. _d 0
           ENDDO
          ENDDO
 
@@ -107,6 +107,11 @@ C     Now read initial conditions and always exchange
        ENDDO
       ENDIF
 
+C     Now read tracer restoring forcing ! added by Yoshi
+         CALL READ_FLD_XYZ_RL('ini_tr1.bin',' ',
+     &        ForcingPTr3(1-OLx,1-OLy,1,1,1,1),0,myThid)
+         _EXCH_XYZ_RL(ForcingPTr3(1-OLx,1-OLy,1,1,1,1),myThid)    
+
 C     Apply mask
       DO iTracer = 1, PTRACERS_numInUse
        DO bj = myByLo(myThid), myByHi(myThid)
@@ -124,9 +129,10 @@ C     Apply mask
       ENDDO
 
 C Read from a pickup file if needed
-      IF ( nIter0.GT.PTRACERS_Iter0 .OR.
-     &    (nIter0.EQ.PTRACERS_Iter0 .AND. pickupSuff.NE.' ')
-     &   ) THEN
+      IF ( nIter0.GT.PTRACERS_Iter0 ) then
+!      IF ( nIter0.GT.PTRACERS_Iter0 .OR.
+!     &    (nIter0.EQ.PTRACERS_Iter0 .AND. pickupSuff.NE.' ')
+!     &   ) THEN
 
        CALL PTRACERS_READ_PICKUP( nIter0, myThid )
       ENDIF

@@ -65,6 +65,8 @@ C     etc
       COMMON /OBCS_FIELDS_TIDES_N/ OBNam, OBNph
       _RL OBNam (1-Olx:sNx+Olx,tidalComponents,nSx,nSy)
       _RL OBNph (1-Olx:sNx+Olx,tidalComponents,nSx,nSy)
+      _RL OBNamt (1-Olx:sNx+Olx,tidalComponents,nSx,nSy)
+      _RL OBNpht (1-Olx:sNx+Olx,tidalComponents,nSx,nSy)
 # endif /* ALLOW_OBCS_TIDES */
 #endif /* ALLOW_OBCS_NORTH */
 
@@ -99,6 +101,8 @@ C     etc
       COMMON /OBCS_FIELDS_TIDES_S/ OBSam, OBSph
       _RL OBSam (1-Olx:sNx+Olx,tidalComponents,nSx,nSy)
       _RL OBSph (1-Olx:sNx+Olx,tidalComponents,nSx,nSy)
+      _RL OBSamt (1-Olx:sNx+Olx,tidalComponents,nSx,nSy)
+      _RL OBSpht (1-Olx:sNx+Olx,tidalComponents,nSx,nSy)
 # endif /* ALLOW_OBCS_TIDES */
 #endif /* ALLOW_OBCS_SOUTH */
 
@@ -133,6 +137,8 @@ C     etc
       COMMON /OBCS_FIELDS_TIDES_E/ OBEam, OBEph
       _RL OBEam (1-Oly:sNy+Oly,tidalComponents,nSx,nSy)
       _RL OBEph (1-Oly:sNy+Oly,tidalComponents,nSx,nSy)
+      _RL OBEamt (1-Oly:sNy+Oly,tidalComponents,nSx,nSy)
+      _RL OBEpht (1-Oly:sNy+Oly,tidalComponents,nSx,nSy)
 # endif /* ALLOW_OBCS_TIDES */
 #endif /* ALLOW_OBCS_EAST */
 
@@ -167,6 +173,8 @@ C     etc
       COMMON /OBCS_FIELDS_TIDES_W/ OBWam, OBWph
       _RL OBWam (1-Oly:sNy+Oly,tidalComponents,nSx,nSy)
       _RL OBWph (1-Oly:sNy+Oly,tidalComponents,nSx,nSy)
+      _RL OBWamt (1-Oly:sNy+Oly,tidalComponents,nSx,nSy)
+      _RL OBWpht (1-Oly:sNy+Oly,tidalComponents,nSx,nSy)
 # endif /* ALLOW_OBCS_TIDES */
 #endif /* ALLOW_OBCS_WEST */
 

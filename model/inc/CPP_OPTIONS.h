@@ -1,4 +1,4 @@
-C $Header: /u/gcmpack/MITgcm/model/inc/CPP_OPTIONS.h,v 1.54 2016/11/28 22:55:00 jmc Exp $
+C $Header: /u/gcmpack/MITgcm_contrib/llc_hires/llc_270/code/CPP_OPTIONS.h,v 1.4 2015/09/29 18:07:50 zhc Exp $
 C $Name:  $
 
 #ifndef CPP_OPTIONS_H
@@ -20,10 +20,7 @@ C CPP flags controlling particular source code features
 
 C o Shortwave heating as extra term in external_forcing.F
 C Note: this should be a run-time option
-#undef SHORTWAVE_HEATING
-
-C o Include/exclude Geothermal Heat Flux at the bottom of the ocean
-#undef ALLOW_GEOTHERMAL_FLUX
+#define SHORTWAVE_HEATING
 
 C o Include/exclude phi_hyd calculation code
 #define INCLUDE_PHIHYD_CALCULATION_CODE
@@ -35,16 +32,13 @@ C o Include/exclude call to S/R CALC_DIFFUSIVITY
 #define INCLUDE_CALC_DIFFUSIVITY_CALL
 
 C o Allow full 3D specification of vertical diffusivity
-#undef ALLOW_3D_DIFFKR
+#define ALLOW_3D_DIFFKR
 
 C o Allow latitudinally varying BryanLewis79 vertical diffusivity
 #undef ALLOW_BL79_LAT_VARY
 
 C o Include/exclude Implicit vertical advection code
 #define INCLUDE_IMPLVERTADV_CODE
-
-C o Include/exclude combined Surf.Pressure and Drag Implicit solver code
-#undef ALLOW_SOLVE4_PS_AND_DRAG
 
 C o Include/exclude AdamsBashforth-3rd-Order code
 #undef ALLOW_ADAMSBASHFORTH_3
@@ -82,7 +76,7 @@ C   so that d/dt(eta) is exactly equal to - Div.Transport
 
 C o Allow the use of Non-Linear Free-Surface formulation
 C   this implies that surface thickness (hFactors) vary with time
-#undef NONLIN_FRSURF
+#define NONLIN_FRSURF
 
 C o Include/exclude code for single reduction Conjugate-Gradient solver
 #define ALLOW_SRCG
@@ -117,17 +111,14 @@ C   such other header files.
 C#define COSINEMETH_III
 
 C o Use "OLD" UV discretisation near boundaries (*not* recommended)
-C   Note - only works with pkg/mom_fluxform and "no_slip_sides=.FALSE."
+C   Note - only works with  #undef NO_SLIP_LATERAL  in calc_mom_rhs.F
 C          because the old code did not have no-slip BCs
-#undef OLD_ADV_BCS
+#undef  OLD_ADV_BCS
 
 C o Use LONG.bin, LATG.bin, etc., initialization for ini_curviliear_grid.F
 C   Default is to use "new" grid files (OLD_GRID_IO undef) but OLD_GRID_IO
 C   is still useful with, e.g., single-domain curvilinear configurations.
-#undef OLD_GRID_IO
-
-C o Use old EXTERNAL_FORCING_U,V,T,S subroutines (for backward compatibility)
-#undef USE_OLD_EXTERNAL_FORCING
+#define OLD_GRID_IO
 
 C o Execution environment support options
 #include "CPP_EEOPTIONS.h"

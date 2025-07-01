@@ -39,6 +39,7 @@ C  myTime               :: model time
 C  myThid               :: thread number
       _RL gPtracer   (1-OLx:sNx+OLx,1-OLy:sNy+OLy)
       _RL surfForcPtr(1-OLx:sNx+OLx,1-OLy:sNy+OLy)
+      _RL gTR_arr    (1-OLx:sNx+OLx,1-OLy:sNy+OLy)
       INTEGER iMin,iMax,jMin,jMax
       INTEGER k, bi,bj, iTracer
       _RL myTime
@@ -80,27 +81,61 @@ C     because it is needed by KPP_TRANSPORT_PTR.
       ENDIF
 #endif /* ALLOW_GCHEM */
 
-      IF ( k .EQ. kSurface ) THEN
-c      DO j=jMin,jMax
-c       DO i=iMin,iMax
-       DO j=0,sNy+1
-        DO i=0,sNx+1
-          gPtracer(i,j) = gPtracer(i,j)
-     &                  + surfForcPtr(i,j)
-     &                   *recip_drF(k)*recip_hFacC(i,j,k,bi,bj)
-        ENDDO
-       ENDDO
-      ELSEIF ( kSurface.EQ.-1 ) THEN
-       DO j=0,sNy+1
-        DO i=0,sNx+1
-         IF ( kSurfC(i,j,bi,bj).EQ.k ) THEN
-          gPtracer(i,j) = gPtracer(i,j)
-     &                  + surfForcPtr(i,j)
-     &                   *recip_drF(k)*recip_hFacC(i,j,k,bi,bj)
-         ENDIF
-        ENDDO
-       ENDDO
-      ENDIF
+
+!      write(6,*) 'vigan1=',k,'kSurface=',kSurface
+!      IF (k.EQ.kSurface) then  
+       
+       IF (iTracer.EQ.1) then
+!         write(6,*) 'vigan2'
+         DO j=jMin,jMax
+          DO i=iMin,iMax
+          gPtracer(i,j) = 
+     &         + (1.0 - pTracer(i,j,k,bi,bj,iTracer))/3600 
+     &         * ForcingPTr3(i,j,k,bi,bj,iTracer)/1.
+     &         * recip_drF(k)*recip_hFacC(i,j,k,bi,bj)    
+!          write(6,*) 'vigan1', ptracer(i,j,k,bi,bj,iTracer)
+!          write(6,*) 'vigan2', ForcingPTr3(i,j,k,bi,bj,iTracer) 
+         ENDDO 
+         ENDDO   
+       ENDIF
+!      ENDIF
+
+!       IF (iTracer.EQ.2) then
+!            IF ( useShelfIce )
+!     &       CALL SHELFICE_FORCING_TR(
+!     U                   gTR_arr,
+!     I                   iMin,iMax,jMin,jMax, k, bi,bj,
+!     I                   myTime, 0, myThid )
+!
+!         DO j=jMin,jMax
+!          DO i=iMin,iMax
+!          gPtracer(i,j) = gPtracer(i,j)+ gTR_arr(i,j)
+!          ENDDO
+!         ENDDO
+!       ENDIF
+
+!      IF ( k .EQ. kSurface ) THEN
+!c      DO j=jMin,jMax
+!c      DO i=iMin,iMax
+!       DO j=0,sNy+1
+!        DO i=0,sNx+1
+!          gPtracer(i,j) = gPtracer(i,j)
+!     &                  + surfForcPtr(i,j)
+!     &                   *recip_drF(k)*recip_hFacC(i,j,k,bi,bj)
+!        ENDDO
+!       ENDDO
+!
+!      ELSEIF ( kSurface.EQ.-1 ) THEN
+!       DO j=0,sNy+1
+!        DO i=0,sNx+1
+!         IF ( kSurfC(i,j,bi,bj).EQ.k ) THEN
+!          gPtracer(i,j) = gPtracer(i,j)
+!     &                  + surfForcPtr(i,j)
+!     &                   *recip_drF(k)*recip_hFacC(i,j,k,bi,bj)
+!         ENDIF
+!        ENDDO
+!       ENDDO
+!      ENDIF
 
       IF (PTRACERS_linFSConserve(iTracer)) THEN
        DO j=0,sNy+1

@@ -1,6 +1,3 @@
-C $Header: /u/gcmpack/MITgcm/pkg/obcs/obcs_balance_flow.F,v 1.8 2016/07/06 22:48:56 jmc Exp $
-C $Name:  $
-
 #include "OBCS_OPTIONS.h"
 
 C---+----1----+----2----+----3----+----4----+----5----+----6----+----7-|--+----|
@@ -326,6 +323,7 @@ C--   Add correction:
             IF ( iB.NE.OB_indexNone ) THEN
              OBEu(j,k,bi,bj) = OBEu(j,k,bi,bj)
      &                       + flowE*maskW(iB,j,k,bi,bj)
+!             write(*,*)'flowE', flowE, maskW(iB,j,k,bi,bj)
             ENDIF
            ENDDO
           ENDDO
@@ -346,6 +344,7 @@ C--   Add correction:
             IF ( iB.NE.OB_indexNone ) THEN
              OBWu(j,k,bi,bj) = OBWu(j,k,bi,bj)
      &                       + flowW*maskW(1+iB,j,k,bi,bj)
+!             write(*,*) 'flowW', flowW, maskW(1+iB,j,k,bi,bj)
             ENDIF
            ENDDO
           ENDDO
@@ -366,6 +365,7 @@ C--   Add correction:
             IF ( jB.NE.OB_indexNone ) THEN
              OBNv(i,k,bi,bj) = OBNv(i,k,bi,bj)
      &                       + flowN*maskS(i,jB,k,bi,bj)
+!             write(*,*)'flowN', flowN,maskS(i,jB,k,bi,bj)
             ENDIF
            ENDDO
           ENDDO
@@ -386,6 +386,7 @@ C--   Add correction:
             IF ( jB.NE.OB_indexNone ) THEN
              OBSv(i,k,bi,bj) = OBSv(i,k,bi,bj)
      &                       + flowS*maskS(i,1+jB,k,bi,bj)
+!             write(*,*)'flowS', flowS,maskS(i,1+jB,k,bi,bj)
             ENDIF
            ENDDO
           ENDDO

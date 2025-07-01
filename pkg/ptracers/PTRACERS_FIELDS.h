@@ -23,8 +23,10 @@ C     surfaceForcingPTr :: passive tracer surface forcing
      &              PTRACERS_num)
       _RL  surfaceForcingPTr (1-OLx:sNx+OLx,1-OLy:sNy+OLy,nSx,nSy,
      &              PTRACERS_num)
+      _RL  ForcingPTr3(1-OLx:sNx+OLx,1-OLy:sNy+OLy,Nr,nSx,nSy,
+     &              PTRACERS_num)
       COMMON /PTRACERS_FIELDS/
-     &              pTracer, gpTrNm1, surfaceForcingPTr
+     &              pTracer, gpTrNm1, surfaceForcingPTr, ForcingPTr3
 
       _RL totSurfCorPTr(PTRACERS_num)
       _RL meanSurfCorPTr(PTRACERS_num)

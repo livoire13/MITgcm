@@ -1,6 +1,3 @@
-C $Header: /u/gcmpack/MITgcm/pkg/layers/LAYERS_OPTIONS.h,v 1.7 2015/06/08 16:26:12 rpa Exp $
-C $Name:  $
-
 C CPP options file for LAYERS package
 C Use this file for selecting options within package "LAYERS"
 
@@ -15,7 +12,7 @@ C     Package-specific Options & Macros go here
 C Compute isopycnal tranports in the U direction?
 #define LAYERS_UFLUX
 C Compute isopycnal tranports in the V direction?
-#define LAYERS_VFLUX
+#undef LAYERS_VFLUX
 C Keep track of layer thicknesses?
 #define LAYERS_THICKNESS
 C Do water mass thermodynamics?
@@ -28,6 +25,9 @@ C The MNC stuff is too complicated
 
 C Allow use of potential density as a layering field.
 #define LAYERS_PRHO_REF
+
+C Allow use of Moist Static Energy as a coordinate (relevant in the atmosphere)
+#undef LAYERS_MSE
 
 #endif /* ALLOW_LAYERS */
 #endif /* LAYERS_OPTIONS_H */
