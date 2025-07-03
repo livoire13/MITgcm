@@ -126,10 +126,9 @@ C     Apply mask
       ENDDO
 
 C Read from a pickup file if needed
-      IF ( nIter0.GT.PTRACERS_Iter0 ) then
-!      IF ( nIter0.GT.PTRACERS_Iter0 .OR.
-!     &    (nIter0.EQ.PTRACERS_Iter0 .AND. pickupSuff.NE.' ')
-!     &   ) THEN
+      IF ( nIter0.GT.PTRACERS_Iter0 .OR.
+     &    (nIter0.EQ.PTRACERS_Iter0 .AND. pickupSuff.NE.' ')
+     &   ) THEN
 
        CALL PTRACERS_READ_PICKUP( nIter0, myThid )
       ENDIF

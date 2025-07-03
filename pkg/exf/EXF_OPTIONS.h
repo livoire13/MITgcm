@@ -169,9 +169,7 @@ C   Bulk formulae related flags.
 #define ALLOW_ATM_TEMP
 #define ALLOW_ATM_WIND
 #define ALLOW_DOWNWARD_RADIATION
-#define ALLOW_RUNOFF
-#undef ALLOW_RUNOFTEMP
-#if (defined (ALLOW_ATM_TEMP) || defined (ALLOW_ATM_WIND))
+#ifdef ALLOW_ATM_TEMP
 # define ALLOW_BULKFORMULAE
 C use Large and Yeager (2004) modification to Large and Pond bulk formulae
 # undef  ALLOW_BULK_LARGEYEAGER04
