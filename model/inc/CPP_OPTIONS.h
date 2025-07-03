@@ -18,7 +18,7 @@ C CPP flags controlling particular source code features
 C-- Forcing code options:
 
 C o Shortwave heating as extra term in APPLY_FORCING_T (apply_forcing.F)
-#undef SHORTWAVE_HEATING
+#define SHORTWAVE_HEATING
 
 C o Include/exclude Geothermal Heat Flux at the bottom of the ocean
 #undef ALLOW_GEOTHERMAL_FLUX
@@ -73,7 +73,7 @@ C o Include/exclude call to S/R CALC_DIFFUSIVITY
 #define INCLUDE_CALC_DIFFUSIVITY_CALL
 
 C o Allow full 3D specification of vertical diffusivity
-#undef ALLOW_3D_DIFFKR
+#define ALLOW_3D_DIFFKR
 
 C o Allow latitudinally varying BryanLewis79 vertical diffusivity
 #undef ALLOW_BL79_LAT_VARY
@@ -110,7 +110,7 @@ C   that ensures that d/dt(eta) is exactly equal to - Div.Transport
 
 C o Allow the use of Non-Linear Free-Surface formulation
 C   this implies that grid-cell thickness (hFactors) varies with time
-#undef NONLIN_FRSURF
+#define NONLIN_FRSURF
 C o Disable code for rStar coordinate and/or code for Sigma coordinate
 c#define DISABLE_RSTAR_CODE
 c#define DISABLE_SIGMA_CODE
@@ -152,7 +152,7 @@ C          because the old code did not have no-slip BCs
 C o Use LONG.bin, LATG.bin, etc., initialization for ini_curviliear_grid.F
 C   Default is to use "new" grid files (OLD_GRID_IO undef) but OLD_GRID_IO
 C   is still useful with, e.g., single-domain curvilinear configurations.
-#undef OLD_GRID_IO
+#define OLD_GRID_IO
 
 C o Use old EXTERNAL_FORCING_U,V,T,S subroutines (for backward compatibility)
 #undef USE_OLD_EXTERNAL_FORCING

@@ -16,7 +16,7 @@ C Enable individual open boundaries
 #define ALLOW_OBCS_WEST
 
 C This include hooks to the Orlanski Open Boundary Radiation code
-#define ALLOW_ORLANSKI
+#undef ALLOW_ORLANSKI
 
 C Enable OB values to be prescribed via external fields that are read
 C from a file
@@ -24,9 +24,9 @@ C from a file
 
 C Enable OB conditions following Stevens (1990)
 #undef ALLOW_OBCS_STEVENS
-
+ 
 C Allow sponge layer treatment of open boundary conditions
-#undef ALLOW_OBCS_SPONGE
+#define ALLOW_OBCS_SPONGE
 
 C Include hooks to sponge layer treatment of pkg/seaice variables
 #undef ALLOW_OBCS_SEAICE_SPONGE
@@ -40,7 +40,7 @@ C Allow to add barotropic tidal contributions to OB velocity
 C Use older implementation of obcs in seaice-dynamics
 C note: most of the "experimental" options listed below have not yet
 C       been implementated in new version.
-#undef OBCS_UVICE_OLD
+#define OBCS_UVICE_OLD
 
 #ifdef OBCS_UVICE_OLD
 C     The following five CPP options are experimental and aim to deal
@@ -49,7 +49,7 @@ C     boundary conditions compared to the model forcing frequency.
 C     Ice convergence at edges can cause model to blow up.  The
 C     following CPP option fixes this problem at the expense of less
 C     accurate boundary conditions.
-#undef OBCS_SEAICE_AVOID_CONVERGENCE
+#define OBCS_SEAICE_AVOID_CONVERGENCE
 
 C     Smooth the component of sea-ice velocity perpendicular to the edge.
 #undef OBCS_SEAICE_SMOOTH_UVICE_PERP
@@ -58,11 +58,11 @@ C     Smooth the component of sea ice velocity parallel to the edge.
 #undef OBCS_SEAICE_SMOOTH_UVICE_PAR
 
 C     Compute rather than specify seaice velocities at the edges.
-#undef OBCS_SEAICE_COMPUTE_UVICE
+#define OBCS_SEAICE_COMPUTE_UVICE
 #endif /* OBCS_UVICE_OLD */
 
 C     Smooth the tracer sea-ice variables near the edges.
-#undef OBCS_SEAICE_SMOOTH_EDGE
+#define OBCS_SEAICE_SMOOTH_EDGE
 
 #endif /* ALLOW_OBCS */
 #endif /* OBCS_OPTIONS_H */

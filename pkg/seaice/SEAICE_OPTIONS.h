@@ -46,7 +46,7 @@ C--   Default is constant seaice salinity (SEAICE_salt0); Define the following
 C     flag to consider (space & time) variable salinity: advected and forming
 C     seaice with a fraction (=SEAICE_saltFrac) of freezing seawater salinity.
 C- Note: SItracer also offers an alternative way to handle variable salinity.
-#undef SEAICE_VARIABLE_SALINITY
+#define SEAICE_VARIABLE_SALINITY
 
 C--   Enable grease ice parameterization (requires to define ALLOW_SITRACER):
 C     The grease ice parameterization delays formation of solid sea ice from
@@ -117,7 +117,7 @@ C     enable LSR to use global (multi-tile) tri-diagonal solver
 # undef SEAICE_GLOBAL_3DIAG_SOLVER
 
 C     enable EVP code by defining the following flag
-# define SEAICE_ALLOW_EVP
+# undef SEAICE_ALLOW_EVP
 # ifdef SEAICE_ALLOW_EVP
 C-    When set use SEAICE_zetaMin and SEAICE_evpDampC to limit viscosities
 C     from below and above in seaice_evp: not necessary, and not recommended
