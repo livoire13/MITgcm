@@ -24,7 +24,7 @@ C from a file
 
 C Enable OB conditions following Stevens (1990)
 #undef ALLOW_OBCS_STEVENS
- 
+
 C Allow sponge layer treatment of open boundary conditions
 #define ALLOW_OBCS_SPONGE
 
