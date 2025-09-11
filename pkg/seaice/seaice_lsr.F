@@ -234,10 +234,10 @@ C     initialise fractional areas at velocity points
 CML         areaMinLoc = SEAICE_EPS
          DO j=jMin,jMax
           DO i=iMin,iMax
-           areaW(i,j,bi,bj) =
-     &          0.5 _d 0*(AREA(i,j,bi,bj)+AREA(i-1,j,bi,bj))
-           areaS(i,j,bi,bj) =
-     &          0.5 _d 0*(AREA(i,j,bi,bj)+AREA(i,j-1,bi,bj))
+           areaW(i,j) = MAX(1.0 _d -03,
+          &     0.5 _d 0*(AREA(i,j,bi,bj)+AREA(i-1,j,bi,bj)))
+           areaS(i,j) = MAX(1.0 _d -03,
+          &     0.5 _d 0*(AREA(i,j,bi,bj)+AREA(i,j-1,bi,bj)))
           ENDDO
          ENDDO
         ENDIF
@@ -1399,8 +1399,10 @@ C
         IF ( SEAICEscaleSurfStress ) THEN
          DO j=jMin,jMax
           DO i=iMin,iMax
-           areaW(i,j) = 0.5 _d 0*(AREA(i,j,bi,bj)+AREA(i-1,j,bi,bj))
-           areaS(i,j) = 0.5 _d 0*(AREA(i,j,bi,bj)+AREA(i,j-1,bi,bj))
+           areaW(i,j) = MAX(1.0 _d -03,
+          &     0.5 _d 0*(AREA(i,j,bi,bj)+AREA(i-1,j,bi,bj)))
+           areaS(i,j) = MAX(1.0 _d -03,
+          &     0.5 _d 0*(AREA(i,j,bi,bj)+AREA(i,j-1,bi,bj)))
           ENDDO
          ENDDO
         ELSE
@@ -1594,8 +1596,8 @@ C     When scaling the surface ice-ocean stress by AREA, then there will
 C     be many cases of zero diagonal entries.
          DO j=jMin,jMax
           DO i=iMin,iMax
-           IF (BU(i,j,bi,bj).EQ.0 _d 0) BU(i,j,bi,bj) = 1. _d 0
-           IF (BV(i,j,bi,bj).EQ.0 _d 0) BV(i,j,bi,bj) = 1. _d 0
+           IF (BU(i,j,bi,bj).EQ.0. _d 0) BU(i,j,bi,bj) = 1. _d 0
+           IF (BV(i,j,bi,bj).EQ.0. _d 0) BV(i,j,bi,bj) = 1. _d 0
           ENDDO
          ENDDO
         ENDIF
