@@ -234,9 +234,10 @@ C     initialise fractional areas at velocity points
 CML         areaMinLoc = SEAICE_EPS
          DO j=jMin,jMax
           DO i=iMin,iMax
-           mytmp = 0.5 _d 0*(AREA(i,j,bi,bj)+AREA(i-1,j,bi,bj))
-           areaW(i,j) = MAX(1.0 _d -03, mytmp)
-           areaS(i,j) = MAX(1.0 _d -03, mytmp)
+           areaW(i,j,bi,bj) = MAX(1.0 _d -03, 0.5 _d 0
+     &          * (AREA(i,j,bi,bj) + AREA(i-1,j,bi,bj)))
+           areaS(i,j,bi,bj) = MAX(1.0 _d -03, 0.5 _d 0
+     &          * (AREA(i,j,bi,bj) + AREA(i-1,j,bi,bj)))
           ENDDO
          ENDDO
         ENDIF
@@ -1398,9 +1399,10 @@ C
         IF ( SEAICEscaleSurfStress ) THEN
          DO j=jMin,jMax
           DO i=iMin,iMax
-           mytmp = 0.5 _d 0*(AREA(i,j,bi,bj)+AREA(i-1,j,bi,bj))
-           areaW(i,j) = MAX(1.0 _d -03, mytmp)
-           areaS(i,j) = MAX(1.0 _d -03, mytmp)
+           areaW(i,j,bi,bj) = MAX(1.0 _d -03, 0.5 _d 0
+     &          * (AREA(i,j,bi,bj) + AREA(i-1,j,bi,bj)))
+           areaS(i,j,bi,bj) = MAX(1.0 _d -03, 0.5 _d 0
+     &          * (AREA(i,j,bi,bj) + AREA(i-1,j,bi,bj)))
           ENDDO
          ENDDO
         ELSE
