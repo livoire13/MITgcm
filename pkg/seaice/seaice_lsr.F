@@ -166,7 +166,6 @@ C     tkey  :: tape key (depends on tile indices and lnkey)
       _RL residUmix, residVmix
 #endif /* SEAICE_ALLOW_FREEDRIFT */
       _RL areaMinLoc
-      _RL myTmp
 
 C---+----1----+----2----+----3----+----4----+----5----+----6----+----7-|--+----|
 
@@ -235,9 +234,10 @@ C     initialise fractional areas at velocity points
 CML         areaMinLoc = SEAICE_EPS
          DO j=jMin,jMax
           DO i=iMin,iMax
-           myTmp = 0.5 _d 0*(AREA(i,j,bi,bj)+AREA(i-1,j,bi,bj))
-           areaW(i,j) = MAX(1.0 _d -03, myTmp)
-           areaS(i,j) = MAX(1.0 _d -03, myTmp)
+           areaW(i,j,bi,bj) =
+     &          0.5 _d 0*(AREA(i,j,bi,bj)+AREA(i-1,j,bi,bj))
+           areaS(i,j,bi,bj) =
+     &          0.5 _d 0*(AREA(i,j,bi,bj)+AREA(i,j-1,bi,bj))
           ENDDO
          ENDDO
         ENDIF
