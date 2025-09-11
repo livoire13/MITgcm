@@ -1355,6 +1355,7 @@ C     i,j,bi,bj  :: Loop counters
 
       INTEGER i, j, bi, bj
       _RL hFacM, hFacP
+      _RL myTmp
 C     backward difference extrapolation factor (includes 1/deltaT)
       _RL bdfAlphaOverDt
 C     strongly implicit coupling factor
