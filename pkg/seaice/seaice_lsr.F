@@ -166,6 +166,7 @@ C     tkey  :: tape key (depends on tile indices and lnkey)
       _RL residUmix, residVmix
 #endif /* SEAICE_ALLOW_FREEDRIFT */
       _RL areaMinLoc
+      _RL myTmp
 
 C---+----1----+----2----+----3----+----4----+----5----+----6----+----7-|--+----|
 
@@ -234,10 +235,9 @@ C     initialise fractional areas at velocity points
 CML         areaMinLoc = SEAICE_EPS
          DO j=jMin,jMax
           DO i=iMin,iMax
-           areaW(i,j,bi,bj) = MAX(1.0 _d -03, 0.5 _d 0
-     &          * (AREA(i,j,bi,bj) + AREA(i-1,j,bi,bj)))
-           areaS(i,j,bi,bj) = MAX(1.0 _d -03, 0.5 _d 0
-     &          * (AREA(i,j,bi,bj) + AREA(i-1,j,bi,bj)))
+           mytmp = 0.5 _d 0*(AREA(i,j,bi,bj)+AREA(i-1,j,bi,bj))
+           areaW(i,j) = MAX(1.0 _d -03, mytmp)
+           areaS(i,j) = MAX(1.0 _d -03, mytmp)
           ENDDO
          ENDDO
         ENDIF
@@ -1399,10 +1399,9 @@ C
         IF ( SEAICEscaleSurfStress ) THEN
          DO j=jMin,jMax
           DO i=iMin,iMax
-           areaW(i,j,bi,bj) = MAX(1.0 _d -03, 0.5 _d 0
-     &          * (AREA(i,j,bi,bj) + AREA(i-1,j,bi,bj)))
-           areaS(i,j,bi,bj) = MAX(1.0 _d -03, 0.5 _d 0
-     &          * (AREA(i,j,bi,bj) + AREA(i-1,j,bi,bj)))
+           mytmp = 0.5 _d 0*(AREA(i,j,bi,bj)+AREA(i-1,j,bi,bj))
+           areaW(i,j) = MAX(1.0 _d -03, mytmp)
+           areaS(i,j) = MAX(1.0 _d -03, mytmp)
           ENDDO
          ENDDO
         ELSE
