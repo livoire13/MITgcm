@@ -46,7 +46,7 @@ C--   Default is constant seaice salinity (SEAICE_salt0); Define the following
 C     flag to consider (space & time) variable salinity: advected and forming
 C     seaice with a fraction (=SEAICE_saltFrac) of freezing seawater salinity.
 C- Note: SItracer also offers an alternative way to handle variable salinity.
-#undef SEAICE_VARIABLE_SALINITY
+#define SEAICE_VARIABLE_SALINITY
 
 C--   Enable grease ice parameterization (requires to define ALLOW_SITRACER):
 C     The grease ice parameterization delays formation of solid sea ice from
@@ -85,7 +85,7 @@ C     the thermodynamics component of the code. Note that, if needed,
 C     sea-ice dynamics can be turned off at runtime (SEAICEuseDYNAMICS=F).
 
 C--   Historically, the seaice model was discretized on a B-Grid. This
-C     discretization should still work but it is not longer actively
+C     discretization should still work but it is no longer actively
 C     tested and supported. Define this flag to compile it. It cannot be
 C     defined together with SEAICE_CGRID
 #undef SEAICE_BGRID_DYNAMICS
@@ -99,6 +99,14 @@ C--   Options for the C-grid version only:
 
 C     enable advection of sea ice momentum
 # undef SEAICE_ALLOW_MOM_ADVECTION
+
+C     Use parameterisation of grounding ice for a better representation
+C     of fastice in shallow seas
+# undef SEAICE_ALLOW_BOTTOMDRAG
+
+C     Use parameterisation of explicit lateral drag for a better
+C     representation of fastice along coast lines and islands
+# undef SEAICE_ALLOW_SIDEDRAG
 
 C     enable JFNK code by defining the following flag
 # define SEAICE_ALLOW_JFNK
@@ -117,7 +125,7 @@ C     enable LSR to use global (multi-tile) tri-diagonal solver
 # undef SEAICE_GLOBAL_3DIAG_SOLVER
 
 C     enable EVP code by defining the following flag
-# define SEAICE_ALLOW_EVP
+# undef SEAICE_ALLOW_EVP
 # ifdef SEAICE_ALLOW_EVP
 C-    When set use SEAICE_zetaMin and SEAICE_evpDampC to limit viscosities
 C     from below and above in seaice_evp: not necessary, and not recommended
@@ -179,18 +187,10 @@ C     This flag is also required for an actual adjoint of seaice_lsr;
 C     increases memory requirements a lot.
 # undef SEAICE_LSR_ADJOINT_ITER
 
-C     Use parameterisation of grounding ice for a better representation
-C     of fastice in shallow seas
-# undef SEAICE_ALLOW_BOTTOMDRAG
-
 C     Allow using the flexible LSR solver, where the number of non-linear
 C     iteration depends on the residual. Good for when a non-linear
 C     convergence criterion must be satified
 # undef SEAICE_ALLOW_LSR_FLEX
-
-C     Use parameterisation of explicit lateral drag for a better
-C     representation of fastice along coast lines and islands
-# undef SEAICE_ALLOW_SIDEDRAG
 
 #endif /* SEAICE_CGRID */
 

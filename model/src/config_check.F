@@ -281,14 +281,14 @@ C     QGLeith code has not been compiled.
       ENDIF
 #endif
 
-#ifdef ALLOW_DEPTH_CONTROL
-      IF ( useOBCS ) THEN
-        WRITE(msgBuf,'(A)')
-     &   'CONFIG_CHECK: DEPTH_CONTROL code not compatible with OBCS'
-        CALL PRINT_ERROR( msgBuf, myThid )
-        errCount = errCount + 1
-      ENDIF
-#endif
+C #ifdef ALLOW_DEPTH_CONTROL
+C      IF ( useOBCS ) THEN
+C        WRITE(msgBuf,'(A)')
+C     &   'CONFIG_CHECK: DEPTH_CONTROL code not compatible with OBCS'
+C        CALL PRINT_ERROR( msgBuf, myThid )
+C        errCount = errCount + 1
+C      ENDIF
+C #endif
 
 #ifndef EXACT_CONSERV
 c     IF ( exactConserv ) THEN

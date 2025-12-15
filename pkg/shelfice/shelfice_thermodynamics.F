@@ -209,6 +209,7 @@ C     where this value is part of the protocol
           shelfIceFreshWaterFlux(I,J,bi,bj) = 0. _d 0
           shelficeForcingT      (I,J,bi,bj) = 0. _d 0
           shelficeForcingS      (I,J,bi,bj) = 0. _d 0
+          shelficeForcingTR     (I,J,bi,bj) = 0. _d 0
 #if (defined SHI_ALLOW_GAMMAFRICT && defined ALLOW_DIAGNOSTICS)
           uStarDiag             (I,J,bi,bj) = 0. _d 0
 #endif /* SHI_ALLOW_GAMMAFRICT and ALLOW_DIAGNOSTICS */
@@ -538,6 +539,8 @@ C--   compute surface tendencies
             shelficeForcingS(i,j,bi,bj) =
      &           shelfIceFreshWaterFlux(I,J,bi,bj) * mass2rUnit
      &           * ( cFac*sLoc(I,J) + (1. _d 0-cFac)*convertFW2SaltLoc )
+            shelficeForcingTR(i,j,bi,bj) =
+     &           -cFac*shelfIceFreshWaterFlux(I,J,bi,bj) * mass2rUnit
 C--   stress at the ice/water interface is computed in separate
 C     routines that are called from mom_fluxform/mom_vecinv
            ELSE
@@ -545,6 +548,7 @@ C     routines that are called from mom_fluxform/mom_vecinv
             shelfIceFreshWaterFlux(I,J,bi,bj) = 0. _d 0
             shelficeForcingT      (I,J,bi,bj) = 0. _d 0
             shelficeForcingS      (I,J,bi,bj) = 0. _d 0
+            shelficeForcingTR     (I,J,bi,bj) = 0. _d 0
            ENDIF
           ENDDO
          ENDDO
@@ -673,11 +677,13 @@ C--        in order to conserve salt and temp even with real FW Flux
      &           )*( saltFreeze - sLoc(I,J) )
      &           - rFWinBL*freshWaterFlux*mass2rUnit
      &            *( sLoc(I,J) - salt(I,J,K,bi,bj) )
+            shelficeForcingTR(i,j,bi,bj) = freshWaterFlux*mass2rUnit
            ELSE
             shelfIceHeatFlux      (I,J,bi,bj) = 0. _d 0
             shelfIceFreshWaterFlux(I,J,bi,bj) = 0. _d 0
             shelficeForcingT      (I,J,bi,bj) = 0. _d 0
             shelficeForcingS      (I,J,bi,bj) = 0. _d 0
+            shelficeForcingTR     (I,J,bi,bj) = 0. _d 0
            ENDIF
           ENDDO
          ENDDO

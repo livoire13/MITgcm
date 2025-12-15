@@ -12,7 +12,7 @@ C     Package-specific Options & Macros go here
 C Compute isopycnal tranports in the U direction?
 #define LAYERS_UFLUX
 C Compute isopycnal tranports in the V direction?
-#define LAYERS_VFLUX
+#undef LAYERS_VFLUX
 C Keep track of layer thicknesses?
 #define LAYERS_THICKNESS
 C Do water mass thermodynamics?

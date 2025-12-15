@@ -165,12 +165,11 @@ C      |     |     |     |     |     | Compute  hflux and sflux.
 C
 C   =======================================================================
 
-C-  Bulk formulae related flags.
+C   Bulk formulae related flags.
 #define ALLOW_ATM_TEMP
 #define ALLOW_ATM_WIND
 #define ALLOW_DOWNWARD_RADIATION
 #ifdef ALLOW_ATM_TEMP
-C Note: To use ALLOW_BULKFORMULAE or EXF_READ_EVAP, needs #define ALLOW_ATM_TEMP
 # define ALLOW_BULKFORMULAE
 C use Large and Yeager (2004) modification to Large and Pond bulk formulae
 # undef  ALLOW_BULK_LARGEYEAGER04
@@ -195,20 +194,21 @@ C       and ATMOSPHERIC_LOADING need to be defined
 # undef EXF_CALC_ATMRHO
 #endif
 
-C-  Zenith Angle/Albedo related flags.
+C  Zenith Angle/Albedo related flags.
 #ifdef ALLOW_DOWNWARD_RADIATION
-# undef ALLOW_ZENITHANGLE
+# define ALLOW_ZENITHANGLE
+#  undef ALLOW_ZENITHANGLE_BOUNDSWDOWN
 #endif
 
-C-  Use ocean_emissivity*lwdown in lwFlux. This flag should be defined
+C   Use ocean_emissivity*lwdown in lwFlux. This flag should be defined
 C   unless to reproduce old results (obtained with inconsistent old code)
 #ifdef ALLOW_DOWNWARD_RADIATION
 # define EXF_LWDOWN_WITH_EMISSIVITY
 #endif
 
 C-  Surface level relaxation to prescribed fields (e.g., climatologies)
-#define ALLOW_CLIMSST_RELAXATION
-#define ALLOW_CLIMSSS_RELAXATION
+#undef ALLOW_CLIMSST_RELAXATION
+#undef ALLOW_CLIMSSS_RELAXATION
 
 C-  Allows to read-in (2-d) tidal geopotential forcing
 #undef EXF_ALLOW_TIDES
@@ -216,9 +216,9 @@ C-  Allows to read-in (2-d) tidal geopotential forcing
 C-  Allows to read-in seaice fraction from files (areaMaskFile)
 #undef EXF_SEAICE_FRACTION
 
-C-  Use spatial interpolation to interpolate
+C   Use spatial interpolation to interpolate
 C   forcing files from input grid to model grid.
-#undef USE_EXF_INTERPOLATION
+#define USE_EXF_INTERPOLATION
 C   for interpolated vector fields, rotate towards model-grid axis
 C   using old rotation formulae (instead of grid-angles)
 #undef EXF_USE_OLD_VEC_ROTATION

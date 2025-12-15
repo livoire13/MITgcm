@@ -773,6 +773,11 @@ c--   Compute all ecco cost function contributions.
 #endif /* ALLOW_ECCO */
 
 #ifdef ALLOW_COST
+c--   Compute all cost function contributions.
+      CALL TIMER_START('COST_DRIVER        [THE_MAIN_LOOP]', myThid)
+      CALL COST_DRIVER ( endTime, myIter, myThid )
+      CALL TIMER_STOP ('COST_DRIVER        [THE_MAIN_LOOP]', myThid)
+
 c--   Sum all cost function contributions.
       CALL TIMER_START('COST_FINAL         [ADJOINT SPIN-DOWN]', myThid)
       CALL COST_FINAL ( myThid )

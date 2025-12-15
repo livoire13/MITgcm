@@ -104,6 +104,11 @@ C     Now read initial conditions and always exchange
        ENDDO
       ENDIF
 
+C     Now read tracer restoring forcing ! added by Yoshi
+         CALL READ_FLD_XYZ_RL('ini_tr1.bin',' ',
+     &        ForcingPTr3(1-OLx,1-OLy,1,1,1,1),0,myThid)
+         _EXCH_XYZ_RL(ForcingPTr3(1-OLx,1-OLy,1,1,1,1),myThid)    
+
 C     Apply mask
       DO iTracer = 1, PTRACERS_numInUse
        DO bj = myByLo(myThid), myByHi(myThid)

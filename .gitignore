@@ -115,4 +115,6 @@ core
 
 /verification/*/tr_run.*
 
+/verification_other
+
 /tools/TAP_support/ADFirstAidKit/*.gch
