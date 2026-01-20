@@ -117,6 +117,18 @@ C --- Shelfice
      &    (xx_filename(1:11).EQ.'xx_shifwflx')) THEN
         CALL CTRL_CPRSRS(maskSHI, Nr, mask2D, 1, myThid)
         iAmDone = .TRUE.
+      ELSEIF ((xx_filename(1:13).EQ.'xx_bottomdrag').OR.
+     &        (xx_filename(1:8).EQ.'xx_depth')) THEN
+        DO bj = myByLo(myThid), myByHi(myThid)
+          DO bi = myBxLo(myThid), myBxHi(myThid)
+            DO j = 1-OLy,sNy+OLy
+              DO i = 1-OLx,sNx+OLx
+                mask2D(i,j,bi,bj) = maskInC(i,j,bi,bj)
+              ENDDO
+            ENDDO
+          ENDDO
+        ENDDO
+        iAmDone = .TRUE.
       ENDIF
 #endif
 
