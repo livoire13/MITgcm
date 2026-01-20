@@ -106,6 +106,8 @@ C     !INPUT/OUTPUT PARAMETERS:
 
 C     !LOCAL VARIABLES:
       LOGICAL iAmDone
+      INTEGER bi,bj
+      INTEGER i,j
 CEOP
 
       iAmDone = .FALSE.
