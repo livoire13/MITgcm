@@ -112,6 +112,8 @@ C           o 2nd subcase: there is a wet cell right below
               hFacC(I,J,K,bi,bj) = 1. _d 0
              ENDIF
             ENDIF
+           ELSE
+             hFacC(I,J,K,bi,bj) = 0. _d 0
            ENDIF
           ENDDO
          ENDDO
