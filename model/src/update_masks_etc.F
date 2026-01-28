@@ -88,39 +88,31 @@ C    taking into account the lower_R Boundary (Bathymetrie / Top of Atmos)
           DO I=1-OLx,sNx+OLx
 C      o Non-dimensional distance between grid bound. and domain lower_R bound.
            hFacCtmp = ( rF(K) - xx_r_low(I,J,bi,bj) )*recip_drF(K)
-Cml           IF ( hFacCtmp .LE. 0. _d 0 ) THEN
-CmlC           IF ( hFacCtmp .LT. 0.5*hfacMnSz ) THEN
-Cml            hFacCtmp2 = 0. _d 0
-Cml           ELSE
-Cml            hFacCtmp2 = hFacCtmp + hFacMnSz*(
-Cml     &           EXP(-hFacCtmp/hFacMnSz)-EXP(-1./hFacMnSz) )
-Cml           ENDIF
-Cml           CALL limit_hfacc_to_one( hFacCtmp2 )
-Cml           hFacC(I,J,K,bi,bj) = hFacCtmp2
-           IF ( hFacCtmp .LE. 0. _d 0 ) THEN
-C           IF ( hFacCtmp .LT. 0.5*hfacMnSz ) THEN
-            hFacC(I,J,K,bi,bj) = 0. _d 0
-           ELSEIF ( hFacCtmp .GT. 1. _d 0 ) THEN
-            hFacC(I,J,K,bi,bj) = 1. _d 0
-           ELSE
-            hFacC(I,J,K,bi,bj) = hFacCtmp + hFacMnSz*(
+           IF ( maskC(I,J,K,bi,bj) .NE. 0. _d 0 ) THEN
+C          o 1st case: hFacCtmp < hFacMin/2 --> set hFacC = 0
+            IF ( hFacCtmp .LT. 0.5*hFacMnSz ) THEN
+             hFacC(I,J,K,bi,bj) = 0. _d 0
+C          o 2nd case: hFacCtmp in [hFacMin/2, 1] --> use the exponential formula
+            ELSEIF ( (hFacCtmp .GE. 0.5*hFacMnSz)
+     &         .AND. (hFacCtmp .LT. 1. _d 0) ) THEN
+             hFacC(I,J,K,bi,bj) = hFacCtmp + hFacMnSz*(
      &           EXP(-hFacCtmp/hFacMnSz)-EXP(-1./hFacMnSz) )
+C          o 3rd case: hFacCtmp in [1, 1+hFacMin/2] --> set hFacC = hFacCtmp
+            ELSEIF ( (hFacCtmp .GE. 1. _d 0)
+     &         .AND. (hFacCtmp .LT. 1. _d 0 + 0.5*hFacMnSz) ) THEN
+             hFacC(I,J,K,bi,bj) = hFacCtmp
+C          o 4th case: hFacCtmp > 1+hFacMin/2
+            ELSE
+C           o 1st subcase: this is the last wet cell in the water column (I, J)
+             IF ( (K .LT. Nr)
+     &      .AND. (maskC(I,J,K+1,bi,bj) .EQ. 0. _d 0) ) THEN
+              hFacC(I,J,K,bi,bj) = hFacCtmp
+C           o 2nd subcase: there is a wet cell right below
+             ELSE
+              hFacC(I,J,K,bi,bj) = 1. _d 0
+             ENDIF
+            ENDIF
            ENDIF
-Cml           print '(A,3I5,F20.16)', 'ml-hfac:', I,J,K,hFacC(I,J,K,bi,bj)
-CmlC      o Select between, closed, open or partial (0,1,0-1)
-Cml            hFacCtmp=min( max( hFacCtmp, 0. _d 0) , 1. _d 0)
-CmlC      o Impose minimum fraction and/or size (dimensional)
-Cml            IF (hFacCtmp.LT.hFacMnSz) THEN
-Cml             IF (hFacCtmp.LT.hFacMnSz*0.5) THEN
-Cml              hFacC(I,J,K,bi,bj)=0.
-Cml             ELSE
-Cml              hFacC(I,J,K,bi,bj)=hFacMnSz
-Cml             ENDIF
-Cml            ELSE
-Cml             hFacC(I,J,K,bi,bj)=hFacCtmp
-Cml            ENDIF
-Cml           ENDIF
-Cml           print '(A,F15.4,F20.16)', 'ml-hfac:', R_low(i,j,bi,bj),hFacC(I,J,K,bi,bj)
           ENDDO
          ENDDO
         ENDDO
