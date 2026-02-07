@@ -89,19 +89,14 @@ C    taking into account the lower_R Boundary (Bathymetrie / Top of Atmos)
 C      o Non-dimensional distance between grid bound. and domain lower_R bound.
            hFacCtmp = ( rF(K) - xx_r_low(I,J,bi,bj) )*recip_drF(K)
            IF ( maskC(I,J,K,bi,bj) .NE. 0. _d 0 ) THEN
-C          o 1st case: hFacCtmp < hFacMin/2 --> set hFacC = 0
-            IF ( hFacCtmp .LT. 0.5*hFacMnSz ) THEN
+C          o 1st case: hFacCtmp < hFacMin --> set hFacC = 0
+            IF ( hFacCtmp .LT. hFacMnSz ) THEN
              hFacC(I,J,K,bi,bj) = 0. _d 0
-C          o 2nd case: hFacCtmp in [hFacMin/2, 1] --> use the exponential formula
-            ELSEIF ( (hFacCtmp .GE. 0.5*hFacMnSz)
-     &         .AND. (hFacCtmp .LT. 1. _d 0) ) THEN
-             hFacC(I,J,K,bi,bj) = hFacCtmp + hFacMnSz*(
-     &           EXP(-hFacCtmp/hFacMnSz)-EXP(-1./hFacMnSz) )
-C          o 3rd case: hFacCtmp in [1, 1+hFacMin/2] --> set hFacC = hFacCtmp
-            ELSEIF ( (hFacCtmp .GE. 1. _d 0)
-     &         .AND. (hFacCtmp .LT. 1. _d 0 + 0.5*hFacMnSz) ) THEN
-             hFacC(I,J,K,bi,bj) = hFacCtmp
-C          o 4th case: hFacCtmp > 1+hFacMin/2
+C          o 2nd case: hFacCtmp in [hFacMin, 1+hFacMin[ --> set hFacC = hFacCtmp
+            ELSEIF ( (hFacCtmp .GE. hFacMnSz)
+     &         .AND. (hFacCtmp .LT. 1. _d 0 + hFacMnSz) ) THEN
+             hFacC(I,J,K,bi,bj) = hFacMnSz
+C          o 3rd case: hFacCtmp > 1+hFacMin
             ELSE
 C           o 1st subcase: this is the last wet cell in the water column (I, J)
              IF ( (K .LT. Nr)
