@@ -7,7 +7,7 @@ c# include "COST_OPTIONS.h"
 c#endif
 
 CBOP
-C !ROUTINE: OBCS_COST_DRIVER
+C !ROUTINE: OBCS_COST_FINAL
 
 C !INTERFACE: ==========================================================
       SUBROUTINE OBCS_COST_FINAL( myThid )
@@ -104,20 +104,25 @@ c--   Sum up all contributions.
 # endif
 
 C     start printing to STDOUT
-      WRITE(msgBuf,'(A,D22.15)') ' --> f_obcsn    =',f_obcsn
+      WRITE(msgBuf,'(A,D22.15,1X,E8.2)')
+     &     ' --> f_obcsn    =', f_obcsn, mult_obcsn
       CALL PRINT_MESSAGE( msgBuf, standardMessageUnit,
      &                    SQUEEZE_RIGHT, myThid )
-      WRITE(msgBuf,'(A,D22.15)') ' --> f_obcss    =',f_obcss
+      WRITE(msgBuf,'(A,D22.15,1X,E8.2)')
+     &     ' --> f_obcss    =', f_obcss, mult_obcss
       CALL PRINT_MESSAGE( msgBuf, standardMessageUnit,
      &                    SQUEEZE_RIGHT, myThid )
-      WRITE(msgBuf,'(A,D22.15)') ' --> f_obcsw    =',f_obcsw
+      WRITE(msgBuf,'(A,D22.15,1X,E8.2)')
+     &     ' --> f_obcsw    =', f_obcsw, mult_obcsw
       CALL PRINT_MESSAGE( msgBuf, standardMessageUnit,
      &                    SQUEEZE_RIGHT, myThid )
-      WRITE(msgBuf,'(A,D22.15)') ' --> f_obcse    =',f_obcse
+      WRITE(msgBuf,'(A,D22.15,1X,E8.2)')
+     &     ' --> f_obcse    =', f_obcse, mult_obcse
       CALL PRINT_MESSAGE( msgBuf, standardMessageUnit,
      &                    SQUEEZE_RIGHT, myThid )
 # ifdef OBCS_AGEOS_COST_CONTRIBUTION
-      WRITE(msgBuf,'(A,D22.15)') ' --> f_ageos    =',f_ageos
+      WRITE(msgBuf,'(A,D22.15,1X,E8.2)')
+     &     ' --> f_ageos    =', f_ageos, mult_ageos
       CALL PRINT_MESSAGE( msgBuf, standardMessageUnit,
      &                    SQUEEZE_RIGHT, myThid )
 # endif
@@ -133,12 +138,17 @@ C--   Each process has calculated the global part for itself.
        CALL PRINT_MESSAGE( msgBuf, standardMessageUnit,
      &                     SQUEEZE_RIGHT, myThid )
 
-       WRITE(ifc,'(A,2D22.15)') 'f_obcsn =', f_obcsn, no_obcsn
-       WRITE(ifc,'(A,2D22.15)') 'f_obcss =', f_obcss, no_obcss
-       WRITE(ifc,'(A,2D22.15)') 'f_obcsw =', f_obcsw, no_obcsw
-       WRITE(ifc,'(A,2D22.15)') 'f_obcse =', f_obcse, no_obcse
+       WRITE(ifc,'(A,2D22.15,1X,E8.2)')
+     &      'f_obcsn =', f_obcsn, no_obcsn, mult_obcsn
+       WRITE(ifc,'(A,2D22.15,1X,E8.2)')
+     &      'f_obcss =', f_obcss, no_obcss, mult_obcss
+       WRITE(ifc,'(A,2D22.15,1X,E8.2)')
+     &      'f_obcsw =', f_obcsw, no_obcsw, mult_obcsw
+       WRITE(ifc,'(A,2D22.15,1X,E8.2)')
+     &      'f_obcse =', f_obcse, no_obcse, mult_obcse
 # ifdef OBCS_AGEOS_COST_CONTRIBUTION
-       WRITE(ifc,'(A,2D22.15)') 'f_ageos =', f_ageos, no_ageos
+       WRITE(ifc,'(A,2D22.15,1X,E8.2)')
+     &      'f_ageos =', f_ageos, no_ageos, mult_ageos
 # endif
        CLOSE(ifc)
 C     Do it only once per run, otherwise grdchk will overwrite or append
