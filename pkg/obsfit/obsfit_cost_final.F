@@ -6,7 +6,7 @@
 CBOP
 C     !ROUTINE: OBSFIT_COST_FINAL
 C     !INTERFACE:
-      SUBROUTINE OBSFIT_COST_FINAL( myThid )
+      SUBROUTINE OBSFIT_COST_FINAL( ifc, optimcycle, myThid )
 
 C     !DESCRIPTION:
 C     *==========================================================*
@@ -23,19 +23,19 @@ C     == global variables ==
 #ifdef ALLOW_COST
 # include "cost.h"
 #endif
-#ifdef ALLOW_CTRL
-# include "OPTIMCYCLE.h"
-#endif
 #include "OBSFIT_SIZE.h"
 #include "OBSFIT.h"
 
 C     !INPUT/OUTPUT PARAMETERS:
+C     ifc        :: file unit for costfunction_obsfit.XXXX
+C     optimcycle :: cycle number of the off-line optimization.
+C     myThid     :: my Thread Id number
+      INTEGER ifc
+      INTEGER optimcycle
       INTEGER myThid
 
 #ifdef ALLOW_COST
 C     ! FUNCTIONS:
-      LOGICAL  MASTER_CPU_THREAD
-      EXTERNAL MASTER_CPU_THREAD
       INTEGER  ILNBLNK
       EXTERNAL ILNBLNK
 
@@ -44,13 +44,10 @@ C     !LOCAL VARIABLES:
       _RL f_obsfit(NFILESMAX_OBS)
       _RL no_obsfit(NFILESMAX_OBS)
 
-      INTEGER ifc
-      CHARACTER*23 cfname
+      CHARACTER*24 cfname
       INTEGER IL
       CHARACTER*(MAX_LEN_MBUF) msgBuf
 CEOP
-
-      ifc = 30
 
 c--   Each process has calculated the global part for itself.
       DO num_file_obs=1,NFILESMAX_OBS
@@ -77,7 +74,7 @@ CML      ENDDO
 C     start printing to STDOUT
       DO num_file_obs=1,NFILESMAX_OBS
        IF ( no_obsfit(num_file_obs).GT.zeroRL ) THEN
-        WRITE(msgBuf,'(A,D22.15,I2,1X,E8.2)')
+        WRITE(msgBuf,'(A,1PE22.14,I2,1X,1PE9.2)')
      &       ' --> f_obsfit =', f_obsfit(num_file_obs), num_file_obs,
      &       mult_obsfit(num_file_obs)
         CALL PRINT_MESSAGE( msgBuf, standardMessageUnit,
@@ -88,9 +85,9 @@ C     start printing to STDOUT
 c--   Each process has calculated the global part for itself.
 
 C     only master thread of master CPU open and write to file
-      IF ( MASTER_CPU_THREAD(myThid)
-     &     .AND. obsfitWriteCostFunction ) THEN
-       WRITE(cfname,'(A,I4.4)') 'costfunction_obsfit',optimcycle
+      IF ( ifc .NE. -1 ) THEN
+
+       WRITE(cfname,'(A,I4.4)') 'costfunction_obsfit.',optimcycle
        OPEN(unit=ifc,file=cfname)
        WRITE(msgBuf,'(A,A)')
      &      'Writing obsfit cost function info to ', cfname
@@ -101,18 +98,13 @@ C     only master thread of master CPU open and write to file
         IF ( no_obsfit(num_file_obs).GT.zeroRL ) THEN
          IL = ILNBLNK( obsfitfiles(num_file_obs) )
          IL = MAX(IL,30)
-         WRITE(ifc,'(4A,2D22.15,1X,E8.2)')
+         WRITE(ifc,'(4A,1PE22.14,1PE22.14,1X,1PE9.2)')
      &        obsfitfiles(num_file_obs)(1:IL), ' ', obsfit_nameval,
      &        ' = ', f_obsfit(num_file_obs), no_obsfit(num_file_obs),
      &        mult_obsfit(num_file_obs)
         ENDIF
        ENDDO
        CLOSE(ifc)
-C     Do it only once per run, otherwise grdchk will overwrite or append
-C     files in an uncontrolled way.
-       obsfitWriteCostFunction = .FALSE.
-
-C     MASTER_CPU_THREAD .AND. obsfitWriteCostFunction
       ENDIF
 
 #endif /* ALLOW_COST */

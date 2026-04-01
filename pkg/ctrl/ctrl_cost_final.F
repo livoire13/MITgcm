@@ -6,7 +6,7 @@
 CBOP
 C     !ROUTINE: CTRL_COST_FINAL
 C     !INTERFACE:
-      SUBROUTINE CTRL_COST_FINAL( myThid )
+      SUBROUTINE CTRL_COST_FINAL( ifc, optimcycle, myThid )
 
 C     !DESCRIPTION:
 C     *==========================================================*
@@ -26,17 +26,19 @@ C     == global variables ==
 #include "CTRL_SIZE.h"
 #include "CTRL.h"
 #include "CTRL_GENARR.h"
-#include "OPTIMCYCLE.h"
 
 C     !INPUT/OUTPUT PARAMETERS:
+C     ifc        :: file unit for costfunction_ctrl.XXXX
+C     optimcycle :: cycle number of the off-line optimization.
+C     myThid     :: my Thread Id number
+      INTEGER ifc
+      INTEGER optimcycle
       INTEGER myThid
 
 #if defined ALLOW_COST && ( defined ALLOW_GENTIM2D_CONTROL || \
                             defined ALLOW_GENARR2D_CONTROL || \
                             defined ALLOW_GENARR3D_CONTROL )
 C     ! FUNCTIONS:
-      LOGICAL  MASTER_CPU_THREAD
-      EXTERNAL MASTER_CPU_THREAD
       INTEGER  ILNBLNK
       EXTERNAL ILNBLNK
 
@@ -55,15 +57,13 @@ C     !LOCAL VARIABLES:
       _RL no_genarr3d(maxCtrlArr3D)
 # endif
 
-      INTEGER ifc
-      CHARACTER*22 cfname
+      CHARACTER*23 cfname
       INTEGER IL
       CHARACTER*(MAX_LEN_FNAM) xx_fname_loc
       CHARACTER*(MAX_LEN_MBUF) msgBuf
 CEOP
 
       IF ( useCtrlCostContribution ) THEN
-       ifc = 30
 
 C     Initialise cost function variables zo zero
 # ifdef ALLOW_GENTIM2D_CONTROL
@@ -131,7 +131,7 @@ c#ifndef ALLOW_OPENAD
         IF (no_gentim2d(num_var).GT.0. _d 0) THEN
          xx_fname_loc = xx_gentim2d_file(num_var)
          IL  = ILNBLNK( xx_fname_loc )
-         WRITE(msgBuf,'(A,D22.15,I2,1X,E8.2,1X,3A)')
+         WRITE(msgBuf,'(A,1PE22.14,I2,1X,1PE9.2,1X,3A)')
      &        ' --> f_gentim2d =',f_gentim2d(num_var), num_var,
      &        mult_gentim2d(num_var), '(', xx_fname_loc(1:IL), ')'
          CALL PRINT_MESSAGE( msgBuf, standardMessageUnit,
@@ -146,7 +146,7 @@ c#ifndef ALLOW_OPENAD
         IF (no_genarr2d(num_var).GT.0. _d 0) THEN
          xx_fname_loc = xx_genarr2d_file(num_var)
          IL  = ILNBLNK( xx_fname_loc )
-         WRITE(msgBuf,'(A,D22.15,I2,1X,E8.2,1X,3A)')
+         WRITE(msgBuf,'(A,1PE22.14,I2,1X,1PE9.2,1X,3A)')
      &        ' --> f_genarr2d =',f_genarr2d(num_var), num_var,
      &        mult_genarr2d(num_var), '(', xx_fname_loc(1:IL), ')'
          CALL PRINT_MESSAGE( msgBuf, standardMessageUnit,
@@ -161,7 +161,7 @@ c#ifndef ALLOW_OPENAD
         IF (no_genarr3d(num_var).GT.0. _d 0) THEN
          xx_fname_loc = xx_genarr3d_file(num_var)
          IL  = ILNBLNK( xx_fname_loc )
-         WRITE(msgBuf,'(A,D22.15,I2,1X,E8.2,1X,3A)')
+         WRITE(msgBuf,'(A,1PE22.14,I2,1X,1PE9.2,1X,3A)')
      &        ' --> f_genarr3d =',f_genarr3d(num_var), num_var,
      &        mult_genarr3d(num_var), '(', xx_fname_loc(1:IL), ')'
          CALL PRINT_MESSAGE( msgBuf, standardMessageUnit,
@@ -173,8 +173,8 @@ c#ifndef ALLOW_OPENAD
 C     write contributions to costfunction file
 
 C--   Each process has calculated the global part for itself.
-       IF ( MASTER_CPU_THREAD(myThid) .AND. ctrlWriteCostFunction ) THEN
-        WRITE(cfname,'(A,I4.4)') 'costfunction_ctrl',optimcycle
+       IF ( ifc .NE. -1 ) THEN
+        WRITE(cfname,'(A,I4.4)') 'costfunction_ctrl.',optimcycle
         OPEN(unit=ifc,file=cfname)
         WRITE(msgBuf,'(A,A)')
      &       'Writing generic ctrl cost function info to ', cfname
@@ -187,7 +187,7 @@ C--   Each process has calculated the global part for itself.
           xx_fname_loc = xx_gentim2d_file(num_var)
           IL  = ILNBLNK( xx_fname_loc )
           IL  = max (IL,15)
-          WRITE(ifc,'(2A,i2.0,A,2D22.15,1X,E8.2)')
+          WRITE(ifc,'(2A,I2.0,A,1PE22.14,1PE22.14,1X,1PE9.2)')
      &         xx_fname_loc(1:IL), ' (gentim2d ', num_var, ') = ',
      &         f_gentim2d(num_var), no_gentim2d(num_var),
      &         mult_gentim2d(num_var)
@@ -201,7 +201,7 @@ C--   Each process has calculated the global part for itself.
           xx_fname_loc = xx_genarr2d_file(num_var)
           IL  = ILNBLNK( xx_fname_loc )
           IL  = max (IL,15)
-          WRITE(ifc,'(2A,i2.0,A,2D22.15,1X,E8.2)')
+          WRITE(ifc,'(2A,I2.0,A,1PE22.14,1PE22.14,1X,1PE9.2)')
      &         xx_fname_loc(1:IL), ' (genarr2d ', num_var, ') = ',
      &         f_genarr2d(num_var), no_genarr2d(num_var),
      &         mult_genarr2d(num_var)
@@ -215,7 +215,7 @@ C--   Each process has calculated the global part for itself.
           xx_fname_loc = xx_genarr3d_file(num_var)
           IL  = ILNBLNK( xx_fname_loc )
           IL  = MAX(IL,15)
-          WRITE(ifc,'(2A,i2.0,A,2D22.15,1X,E8.2)')
+          WRITE(ifc,'(2A,I2.0,A,1PE22.14,1PE22.14,1X,1PE9.2)')
      &         xx_fname_loc(1:IL), ' (genarr3d ', num_var, ') = ',
      &         f_genarr3d(num_var), no_genarr3d(num_var),
      &         mult_genarr3d(num_var)
@@ -223,9 +223,6 @@ C--   Each process has calculated the global part for itself.
         ENDDO
 # endif
         CLOSE(ifc)
-C     Do it only once per run, otherwise grdchk will overwrite or append
-C     files in an uncontrolled way.
-        ctrlWriteCostFunction = .FALSE.
        ENDIF
 
 C     useCtrlCostContribution

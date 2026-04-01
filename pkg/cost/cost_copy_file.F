@@ -5,24 +5,23 @@ CBOP
 C !ROUTINE: COST_COPY_FILE
 
 C !INTERFACE:
-      SUBROUTINE COST_COPY_FILE( oUnit, myThid )
+      SUBROUTINE COST_COPY_FILE( oUnit, optimcycle, myThid )
 C !DESCRIPTION:
 C     Helper routine to hide irreducible statements from TAF:
-C     Copy content of costfunction_${pkg}XXXX to oUnit
+C     Copy content of costfunction_${pkg}.XXXX to oUnit
 
 C     !USES:
       IMPLICIT NONE
 C     == Global variables ===
 #include "EEPARAMS.h"
-#ifdef ALLOW_CTRL
-# include "OPTIMCYCLE.h"
-#endif
 
 C !INPUT/OUTPUT PARAMETERS:
-C     myThid :: my Thread Id number
 C     oUnit  :: file unit of output file (set in cost_final.F)
-      INTEGER myThid
+C     optimcycle :: cycle number of the off-line optimization.
+C     myThid :: my Thread Id number
       INTEGER oUnit
+      INTEGER optimcycle
+      INTEGER myThid
 CEOP
 
 C !FUNCTIONS:
@@ -55,8 +54,8 @@ C     that the character variables need to be all of the same length.
       DO ipkg = 1, nPkg
        cfexist = .FALSE.
        IL = ILNBLNK( pkgNames(ipkg) )
-       WRITE(cfname,'(A,A,I4.4)')
-     &      'costfunction_',pkgNames(ipkg)(1:IL),optimcycle
+       WRITE(cfname,'(3A,I4.4)')
+     &      'costfunction_',pkgNames(ipkg)(1:IL),'.',optimcycle
        IL = ILNBLNK( cfname )
        INQUIRE(FILE=cfname(1:IL), EXIST=cfexist)
        IF ( cfexist ) THEN
@@ -70,7 +69,7 @@ C     that the character variables need to be all of the same length.
         DO WHILE ( .TRUE. )
          READ( iUnit, FMT='(A)', END=1001 ) RECORD
          IL = MAX(ILNBLNK( RECORD ),1)
-         WRITE( oUnit, FMT='(A)') RECORD(:IL)
+         WRITE( oUnit, FMT='(A)') RECORD(1:IL)
         ENDDO
  1001   CONTINUE
 
