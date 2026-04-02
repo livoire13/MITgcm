@@ -107,10 +107,6 @@ cML       WRITE(ifc,*) 'f_shelfice =', f_shelfice, no_shelfice
 
        CLOSE(ifc)
 
-C     Do it only once per run, otherwise grdchk will overwrite or append
-C     files in an uncontrolled way.
-       SHELFICEwriteCostFunction = .FALSE.
-
       ENDIF
 # endif /* ALLOW_OPENAD */
 

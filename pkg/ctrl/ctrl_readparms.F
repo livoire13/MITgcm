@@ -335,13 +335,6 @@ C     flag is defined
         mult_obcsvol        =   0. _d 0
         mult_ageos          =   0. _d 0
 
-        mult_obcsn          =   0. _d 0
-        mult_obcss          =   0. _d 0
-        mult_obcsw          =   0. _d 0
-        mult_obcse          =   0. _d 0
-        mult_obcsvol        =   0. _d 0
-        mult_ageos          =   0. _d 0
-
 C     retired parameters
 
         CALL CTRL_SET_RETIRED_PARMS(xx_hfluxstartdate1,

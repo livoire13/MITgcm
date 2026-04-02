@@ -92,10 +92,6 @@ c       WRITE(ifc,*) 'fc =', fc
 
         CLOSE(ifc)
 
-C     Do it only once per run, otherwise grdchk will overwrite or append
-C     files in an uncontrolled way.
-        SEAICEwriteCostFunction = .FALSE.
-
       ENDIF
 
 #endif /* ALLOW_COST and ALLOW_COST_ICE */

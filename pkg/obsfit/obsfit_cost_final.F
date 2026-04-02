@@ -105,6 +105,7 @@ C     only master thread of master CPU open and write to file
         ENDIF
        ENDDO
        CLOSE(ifc)
+       
       ENDIF
 
 #endif /* ALLOW_COST */

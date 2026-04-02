@@ -30,7 +30,6 @@ C===========================================================
       integer profNo(NFILESPROFMAX,nsx,nsy)
       integer profDepthNo(NFILESPROFMAX,nsx,nsy)
 
-      logical profilesWriteCostFunction
       logical vec_quantities(NFILESPROFMAX,NVARMAX,nsx,nsy)
       integer fidforward(NFILESPROFMAX,nsx,nsy),
      & fidadjoint(NFILESPROFMAX,nsx,nsy),
@@ -104,8 +103,7 @@ C===========================================================
 #endif
 
       COMMON /profiles_l/ vec_quantities, profilesDoNcOutput,
-     & profilesDoGenGrid, prof_make_nc,
-     & profilesWriteCostFunction
+     & profilesDoGenGrid, prof_make_nc
       COMMON /profiles_c/ prof_names, prof_namesmask,
 #ifdef ALLOW_PROFILES_CLIMMASK
      & prof_namesclim,
