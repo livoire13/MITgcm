@@ -256,7 +256,7 @@ CEOP
       IF (debugMode) CALL DEBUG_ENTER('DO_OCEANIC_PHYS',myThid)
 #endif
 
-      doDiagsRho = 0
+      doDiagsRho = 1
 #ifdef ALLOW_DIAGNOSTICS
       IF ( useDiagnostics .AND. fluidIsWater ) THEN
         IF ( DIAGNOSTICS_IS_ON('MXLDEPTH',myThid) )
@@ -840,6 +840,18 @@ C         slope terms (e.g. GM/Redi tensor or IVDC diffusivity)
               ENDDO
              ENDIF
             ENDIF
+C MY DIAGNOSTIC BLOCK BEGINS HERE            
+            IF (k.GT.1) THEN
+             CALL FIND_RHO_2D(
+     I                iMin, iMax, jMin, jMax, k,
+     I                theta(1-OLx,1-OLy,k-1,bi,bj),
+     I                salt (1-OLx,1-OLy,k-1,bi,bj),
+     O                rhoKm1,
+     I                k-1, bi, bj, myThid )
+            ENDIF
+            CALL DIAGNOSTICS_FILL(
+     I        rhoKm1,'UDIAG3  ',
+     I        k, 1, 2, bi, bj, myThid )
 #ifdef ALLOW_DEBUG
             IF (debugMode) CALL DEBUG_CALL('GRAD_SIGMA',myThid)
 #endif
