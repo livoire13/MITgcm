@@ -376,6 +376,8 @@ C--   Input files
       meridWindFile   = ' '
       thetaClimFile   = ' '
       saltClimFile    = ' '
+      sgsThetaFile    = ' '
+      sgsSaltFile     = ' '
       EmPmRfile       = ' '
       saltFluxFile    = ' '
       surfQfile       = ' '

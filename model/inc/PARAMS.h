@@ -62,6 +62,11 @@ C     thetaClimFile   :: File containing surface theta climataology used
 C                        in relaxation term -lambda(theta-theta*)
 C     saltClimFile    :: File containing surface salt climataology used
 C                        in relaxation term -lambda(salt-salt*)
+C     sgsThetaFile    :: File containing time-dependent 3-D SGS
+C                        potential-temperature forcing.
+C
+C     sgsSaltFile     :: File containing time-dependent 3-D SGS
+C                        salinity forcing.
 C     surfQfile       :: File containing surface heat flux, excluding SW
 C                        (old version, kept for backward compatibility)
 C     surfQnetFile    :: File containing surface net heat flux
@@ -94,6 +99,7 @@ C     the_run_name    :: string identifying the name of the model "run"
      &                hydrogThetaFile, hydrogSaltFile, diffKrFile,
      &                zonalWindFile, meridWindFile, thetaClimFile,
      &                saltClimFile,
+     &                sgsThetaFile, sgsSaltFile,
      &                EmPmRfile, saltFluxFile,
      &                surfQfile, surfQnetFile, surfQswFile,
      &                uVelInitFile, vVelInitFile, pSurfInitFile,
@@ -128,6 +134,8 @@ C     the_run_name    :: string identifying the name of the model "run"
       CHARACTER*(MAX_LEN_FNAM) meridWindFile
       CHARACTER*(MAX_LEN_FNAM) thetaClimFile
       CHARACTER*(MAX_LEN_FNAM) saltClimFile
+      CHARACTER*(MAX_LEN_FNAM) sgsThetaFile
+      CHARACTER*(MAX_LEN_FNAM) sgsSaltFile
       CHARACTER*(MAX_LEN_FNAM) surfQfile
       CHARACTER*(MAX_LEN_FNAM) surfQnetFile
       CHARACTER*(MAX_LEN_FNAM) surfQswFile

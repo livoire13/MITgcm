@@ -186,10 +186,17 @@ C     [0,1]         :: End points for interpolation
       COMMON /FFIELDS_I/ loadedRec
       INTEGER loadedRec(nSx,nSy)
 
+      COMMON /FFIELDS_SGS/
+     &                 sgsT, sgsS
+
+      _RS  sgsT(1-OLx:sNx+OLx,1-OLy:sNy+OLy,Nr,nSx,nSy)
+      _RS  sgsS(1-OLx:sNx+OLx,1-OLy:sNy+OLy,Nr,nSx,nSy)
+
       COMMON /TDFIELDS/
      &                 taux0, tauy0, Qnet0, EmPmR0, SST0, SSS0,
      &                 taux1, tauy1, Qnet1, EmPmR1, SST1, SSS1,
-     &                 saltFlux0, saltFlux1
+     &                 saltFlux0, saltFlux1,
+     &                 sgsT0, sgsS0, sgsT1, sgsS1
 #ifdef SHORTWAVE_HEATING
      &               , Qsw0, Qsw1
 #endif
@@ -214,6 +221,10 @@ C     [0,1]         :: End points for interpolation
       _RS  saltFlux1(1-OLx:sNx+OLx,1-OLy:sNy+OLy,nSx,nSy)
       _RS  SST1     (1-OLx:sNx+OLx,1-OLy:sNy+OLy,nSx,nSy)
       _RS  SSS1     (1-OLx:sNx+OLx,1-OLy:sNy+OLy,nSx,nSy)
+      _RS  sgsT0(1-OLx:sNx+OLx,1-OLy:sNy+OLy,Nr,nSx,nSy)
+      _RS  sgsS0(1-OLx:sNx+OLx,1-OLy:sNy+OLy,Nr,nSx,nSy)
+      _RS  sgsT1(1-OLx:sNx+OLx,1-OLy:sNy+OLy,Nr,nSx,nSy)
+      _RS  sgsS1(1-OLx:sNx+OLx,1-OLy:sNy+OLy,Nr,nSx,nSy)
 #ifdef SHORTWAVE_HEATING
       _RS  Qsw0     (1-OLx:sNx+OLx,1-OLy:sNy+OLy,nSx,nSy)
       _RS  Qsw1     (1-OLx:sNx+OLx,1-OLy:sNy+OLy,nSx,nSy)

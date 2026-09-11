@@ -120,6 +120,17 @@ C-    3-D forcing fields
           ENDDO
          ENDDO
 #endif /* ALLOW_EDDYPSI */
+         DO j=1-OLy,sNy+OLy
+          DO i=1-OLx,sNx+OLx
+           sgsT0(i,j,k,bi,bj) = 0. _d 0
+           sgsT1(i,j,k,bi,bj) = 0. _d 0
+           sgsS0(i,j,k,bi,bj) = 0. _d 0
+           sgsS1(i,j,k,bi,bj) = 0. _d 0
+           sgsT(i,j,k,bi,bj) = 0. _d 0
+           sgsS(i,j,k,bi,bj) = 0. _d 0
+          ENDDO
+         ENDDO
+C- end k-loop
         ENDDO
 
 C-    Intermediate surface forcing arrays

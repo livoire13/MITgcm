@@ -480,6 +480,16 @@ C     However, for some diagnostics, we may want to get valid forcing
 C     extended over 1 point in tile halo region (0:sNx+1,0:sNy=1).
 
 C--   Forcing term
+      IF ( sgsThetaFile .NE. ' ' ) THEN
+       DO j=0,sNy+1
+        DO i=0,sNx+1
+         gT_arr(i,j) = gT_arr(i,j)
+     &       + sgsT(i,j,k,bi,bj)
+     &       * maskC(i,j,k,bi,bj)
+     &       * maskInC(i,j,bi,bj)
+        ENDDO
+       ENDDO
+      ENDIF
 #ifdef ALLOW_AIM
       IF ( useAIM ) CALL AIM_TENDENCY_APPLY_T(
      U                       gT_arr,
@@ -850,6 +860,16 @@ C     However, for some diagnostics, we may want to get valid forcing
 C     extended over 1 point in tile halo region (0:sNx+1,0:sNy=1).
 
 C--   Forcing term
+      IF ( sgsSaltFile .NE. ' ' ) THEN
+       DO j=0,sNy+1
+        DO i=0,sNx+1
+         gS_arr(i,j) = gS_arr(i,j)
+     &       + sgsS(i,j,k,bi,bj)
+     &       * maskC(i,j,k,bi,bj)
+     &       * maskInC(i,j,bi,bj)
+        ENDDO
+       ENDDO
+      ENDIF
 #ifdef ALLOW_AIM
       IF ( useAIM ) CALL AIM_TENDENCY_APPLY_S(
      U                       gS_arr,

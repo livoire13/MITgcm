@@ -313,6 +313,7 @@ C--   Input files
      & maskIniTemp, maskIniSalt, checkIniTemp, checkIniSalt,
      & zonalWindFile, meridWindFile,
      & thetaClimFile, saltClimFile,
+     & sgsThetaFile, sgsSaltFile,
      & surfQfile, surfQnetFile, surfQswFile, EmPmRfile, saltFluxFile,
      & uVelInitFile, vVelInitFile, pSurfInitFile,
      & dQdTFile, ploadFile, geoPotAnomFile, addMassFile,

@@ -171,6 +171,21 @@ c        ENDIF
          CALL READ_REC_XY_RS( saltClimFile, SSS1,
      &                        intime1, myIter, myThid )
         ENDIF
+        IF ( sgsThetaFile .NE. ' ' ) THEN
+         CALL READ_REC_XYZ_RS( sgsThetaFile, sgsT0,
+     &                         intime0, myIter, myThid )
+         CALL READ_REC_XYZ_RS( sgsThetaFile, sgsT1,
+     &                         intime1, myIter, myThid )
+        ENDIF
+
+        IF ( sgsSaltFile .NE. ' ' ) THEN
+          CALL READ_REC_XYZ_RS(
+     &         sgsSaltFile, sgsS0,
+     &         intime0, myIter, myThid )
+          CALL READ_REC_XYZ_RS(
+     &         sgsSaltFile, sgsS1,
+     &         intime1, myIter, myThid )
+        ENDIF
 #ifdef SHORTWAVE_HEATING
         IF ( surfQswFile .NE. ' '  ) THEN
          CALL READ_REC_XY_RS( surfQswFile, Qsw0,
@@ -216,6 +231,10 @@ C-    thread synchronisation (barrier) is part of the EXCH S/R calls
         _EXCH_XY_RS(SST1  , myThid )
         _EXCH_XY_RS(SSS0  , myThid )
         _EXCH_XY_RS(SSS1  , myThid )
+        _EXCH_XYZ_RS( sgsT0, myThid )
+        _EXCH_XYZ_RS( sgsT1, myThid )
+        _EXCH_XYZ_RS( sgsS0, myThid )
+        _EXCH_XYZ_RS( sgsS1, myThid )
         CALL EXCH_UV_XY_RS(taux0,tauy0,.TRUE.,myThid)
         CALL EXCH_UV_XY_RS(taux1,tauy1,.TRUE.,myThid)
         _EXCH_XY_RS(Qnet0, myThid )
@@ -259,6 +278,28 @@ C--   Interpolate fu,fv,Qnet,EmPmR,SST,SSS,Qsw
            DO i=1-OLx,sNx+OLx
             SSS(i,j,bi,bj)   = bWght*SSS0(i,j,bi,bj)
      &                       + aWght*SSS1(i,j,bi,bj)
+           ENDDO
+          ENDDO
+        ENDIF
+        IF ( sgsThetaFile .NE. ' ' ) THEN
+          DO k=1,Nr
+           DO j=1-OLy,sNy+OLy
+            DO i=1-OLx,sNx+OLx
+             sgsT(i,j,k,bi,bj) =
+     &          bWght*sgsT0(i,j,k,bi,bj)
+     &        + aWght*sgsT1(i,j,k,bi,bj)
+            ENDDO
+           ENDDO
+          ENDDO
+        ENDIF
+        IF ( sgsSaltFile .NE. ' ' ) THEN
+          DO k=1,Nr
+           DO j=1-OLy,sNy+OLy
+            DO i=1-OLx,sNx+OLx
+             sgsS(i,j,k,bi,bj) =
+     &          bWght*sgsS0(i,j,k,bi,bj)
+     &        + aWght*sgsS1(i,j,k,bi,bj)
+            ENDDO
            ENDDO
           ENDDO
         ENDIF
@@ -348,6 +389,32 @@ C-- Print for checking:
      &   ' EXTERNAL_FIELDS_LOAD: SST,SSS,Q,E-P=',
      &          SST(1,sNy,1,1),   SSS(1,sNy,1,1),
      &         Qnet(1,sNy,1,1), EmPmR(1,sNy,1,1)
+        _END_MASTER( myThid )
+      ENDIF
+#endif /* ALLOW_DEBUG */
+
+#ifdef ALLOW_DEBUG
+      IF ( debugLevel.GE.debLevC ) THEN
+        _BEGIN_MASTER( myThid )
+
+        IF ( sgsThetaFile .NE. ' ' ) THEN
+          WRITE(standardMessageUnit,'(A,1P6E12.4)')
+     &      ' EXTERNAL_FIELDS_LOAD: SGS T=',
+     &      sgsT0(1,sNy,1,1,1),
+     &      sgsT1(1,sNy,1,1,1),
+     &      sgsT (1,sNy,1,1,1),
+     &      bWght, aWght, 0. _d 0
+        ENDIF
+
+        IF ( sgsSaltFile .NE. ' ' ) THEN
+          WRITE(standardMessageUnit,'(A,1P6E12.4)')
+     &      ' EXTERNAL_FIELDS_LOAD: SGS S=',
+     &      sgsS0(1,sNy,1,1,1),
+     &      sgsS1(1,sNy,1,1,1),
+     &      sgsS (1,sNy,1,1,1),
+     &      bWght, aWght, 0. _d 0
+        ENDIF
+
         _END_MASTER( myThid )
       ENDIF
 #endif /* ALLOW_DEBUG */
