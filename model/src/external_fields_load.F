@@ -55,7 +55,7 @@ C     myThid :: Thread no. that called this routine.
 C     !LOCAL VARIABLES:
 C     === Local arrays ===
 C     aWght, bWght :: Interpolation weights
-      INTEGER bi, bj, i, j
+      INTEGER bi, bj, i, j, k
       INTEGER intimeP, intime0, intime1
       _RL aWght, bWght
 CEOP
