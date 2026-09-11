@@ -58,7 +58,17 @@ C     aWght, bWght :: Interpolation weights
       INTEGER bi, bj, i, j, k
       INTEGER intimeP, intime0, intime1
       _RL aWght, bWght
+CHL   !LOCAL VARIABLES FOR SGS FORCING:
+      INTEGER sgsIntimeP, sgsIntime0, sgsIntime1
+      _RL sgsAWght, sgsBWght
+      LOGICAL sgsExternalForcing
 CEOP
+
+CHL   Set sgsExternalForcing boolean
+      IF ( sgsThetaFile .NE. ' ' .OR.
+     &     sgsSaltFile  .NE. ' ' ) THEN
+        sgsExternalForcing = .TRUE.
+      ENDIF
 
       IF ( periodicExternalForcing ) THEN
 
@@ -171,21 +181,6 @@ c        ENDIF
          CALL READ_REC_XY_RS( saltClimFile, SSS1,
      &                        intime1, myIter, myThid )
         ENDIF
-        IF ( sgsThetaFile .NE. ' ' ) THEN
-         CALL READ_REC_XYZ_RS( sgsThetaFile, sgsT0,
-     &                         intime0, myIter, myThid )
-         CALL READ_REC_XYZ_RS( sgsThetaFile, sgsT1,
-     &                         intime1, myIter, myThid )
-        ENDIF
-
-        IF ( sgsSaltFile .NE. ' ' ) THEN
-          CALL READ_REC_XYZ_RS(
-     &         sgsSaltFile, sgsS0,
-     &         intime0, myIter, myThid )
-          CALL READ_REC_XYZ_RS(
-     &         sgsSaltFile, sgsS1,
-     &         intime1, myIter, myThid )
-        ENDIF
 #ifdef SHORTWAVE_HEATING
         IF ( surfQswFile .NE. ' '  ) THEN
          CALL READ_REC_XY_RS( surfQswFile, Qsw0,
@@ -231,10 +226,6 @@ C-    thread synchronisation (barrier) is part of the EXCH S/R calls
         _EXCH_XY_RS(SST1  , myThid )
         _EXCH_XY_RS(SSS0  , myThid )
         _EXCH_XY_RS(SSS1  , myThid )
-        _EXCH_XYZ_RS( sgsT0, myThid )
-        _EXCH_XYZ_RS( sgsT1, myThid )
-        _EXCH_XYZ_RS( sgsS0, myThid )
-        _EXCH_XYZ_RS( sgsS1, myThid )
         CALL EXCH_UV_XY_RS(taux0,tauy0,.TRUE.,myThid)
         CALL EXCH_UV_XY_RS(taux1,tauy1,.TRUE.,myThid)
         _EXCH_XY_RS(Qnet0, myThid )
@@ -278,28 +269,6 @@ C--   Interpolate fu,fv,Qnet,EmPmR,SST,SSS,Qsw
            DO i=1-OLx,sNx+OLx
             SSS(i,j,bi,bj)   = bWght*SSS0(i,j,bi,bj)
      &                       + aWght*SSS1(i,j,bi,bj)
-           ENDDO
-          ENDDO
-        ENDIF
-        IF ( sgsThetaFile .NE. ' ' ) THEN
-          DO k=1,Nr
-           DO j=1-OLy,sNy+OLy
-            DO i=1-OLx,sNx+OLx
-             sgsT(i,j,k,bi,bj) =
-     &          bWght*sgsT0(i,j,k,bi,bj)
-     &        + aWght*sgsT1(i,j,k,bi,bj)
-            ENDDO
-           ENDDO
-          ENDDO
-        ENDIF
-        IF ( sgsSaltFile .NE. ' ' ) THEN
-          DO k=1,Nr
-           DO j=1-OLy,sNy+OLy
-            DO i=1-OLx,sNx+OLx
-             sgsS(i,j,k,bi,bj) =
-     &          bWght*sgsS0(i,j,k,bi,bj)
-     &        + aWght*sgsS1(i,j,k,bi,bj)
-            ENDDO
            ENDDO
           ENDDO
         ENDIF
@@ -393,6 +362,86 @@ C-- Print for checking:
       ENDIF
 #endif /* ALLOW_DEBUG */
 
+C endif for periodicForcing
+      ENDIF
+
+CHL   New block for SGS forcing
+      IF ( sgsExternalForcing ) THEN
+
+C--   Now calculate whether it is time to update the forcing arrays
+      CALL GET_PERIODIC_INTERVAL(
+     O                  sgsIntimeP, sgsIntime0, sgsIntime1,
+     O                  sgsBWght, sgsAWght,
+     I                  externForcingCycle, externForcingPeriod,
+     I                  deltaTClock,
+     I                  myTime + 0.5 _d 0 * externForcingPeriod,
+     I                  myThid )
+
+      sgsBWght = 1. _d 0 - sgsBWght
+      sgsAWght = 1. _d 0 - sgsAWght
+
+#ifdef ALLOW_DEBUG
+      WRITE(standardMessageUnit,'(A,I10,A,3I5,A,2F14.10)')
+     &   ' EXTERNAL_FIELDS_LOAD,', myIter,
+     &   ' : iP,i0,i1=', sgsIntimeP,sgsIntime0,sgsIntime1,
+     &   ' ; Wght=', sgsBWght,sgsAWght
+#endif /* ALLOW_DEBUG */
+
+      IF ( sgsIntime0 .NE. sgsIntimeP ) THEN
+        PRINT *, "reading the forcing files!"
+        IF ( sgsThetaFile .NE. ' ' ) THEN
+         CALL READ_REC_XYZ_RS( sgsThetaFile, sgsT0,
+     &                         sgsIntime0, myIter, myThid )
+         CALL READ_REC_XYZ_RS( sgsThetaFile, sgsT1,
+     &                         sgsIntime1, myIter, myThid )
+        ENDIF
+
+        IF ( sgsSaltFile .NE. ' ' ) THEN
+          CALL READ_REC_XYZ_RS(
+     &         sgsSaltFile, sgsS0,
+     &         sgsIntime0, myIter, myThid )
+          CALL READ_REC_XYZ_RS(
+     &         sgsSaltFile, sgsS1,
+     &         sgsIntime1, myIter, myThid )
+        ENDIF
+
+C-    thread synchronisation (barrier) is part of the EXCH S/R calls
+        _EXCH_XYZ_RS( sgsT0, myThid )
+        _EXCH_XYZ_RS( sgsT1, myThid )
+        _EXCH_XYZ_RS( sgsS0, myThid )
+        _EXCH_XYZ_RS( sgsS1, myThid )
+
+C--   end if-block for loading new time-records
+      ENDIF
+
+C--   Interpolate fu,fv,Qnet,EmPmR,SST,SSS,Qsw
+      DO bj = myByLo(myThid), myByHi(myThid)
+       DO bi = myBxLo(myThid), myBxHi(myThid)
+        IF ( sgsThetaFile .NE. ' ' ) THEN
+          DO k=1,Nr
+           DO j=1-OLy,sNy+OLy
+            DO i=1-OLx,sNx+OLx
+             sgsT(i,j,k,bi,bj) =
+     &          sgsBWght*sgsT0(i,j,k,bi,bj)
+     &        + sgsAWght*sgsT1(i,j,k,bi,bj)
+            ENDDO
+           ENDDO
+          ENDDO
+        ENDIF
+        IF ( sgsSaltFile .NE. ' ' ) THEN
+          DO k=1,Nr
+           DO j=1-OLy,sNy+OLy
+            DO i=1-OLx,sNx+OLx
+             sgsS(i,j,k,bi,bj) =
+     &          sgsBWght*sgsS0(i,j,k,bi,bj)
+     &        + sgsAWght*sgsS1(i,j,k,bi,bj)
+            ENDDO
+           ENDDO
+          ENDDO
+        ENDIF
+       ENDDO
+      ENDDO
+
 #ifdef ALLOW_DEBUG
       IF ( debugLevel.GE.debLevC ) THEN
         _BEGIN_MASTER( myThid )
@@ -400,26 +449,25 @@ C-- Print for checking:
         IF ( sgsThetaFile .NE. ' ' ) THEN
           WRITE(standardMessageUnit,'(A,1P6E12.4)')
      &      ' EXTERNAL_FIELDS_LOAD: SGS T=',
-     &      sgsT0(1,sNy,1,1,1),
-     &      sgsT1(1,sNy,1,1,1),
-     &      sgsT (1,sNy,1,1,1),
-     &      bWght, aWght, 0. _d 0
+     &      sgsT0(10,10,10,1,1),
+     &      sgsT1(10,10,10,1,1),
+     &      sgsT (10,10,10,1,1),
+     &      sgsBWght, sgsAWght, 0. _d 0
         ENDIF
-
         IF ( sgsSaltFile .NE. ' ' ) THEN
           WRITE(standardMessageUnit,'(A,1P6E12.4)')
      &      ' EXTERNAL_FIELDS_LOAD: SGS S=',
-     &      sgsS0(1,sNy,1,1,1),
-     &      sgsS1(1,sNy,1,1,1),
-     &      sgsS (1,sNy,1,1,1),
-     &      bWght, aWght, 0. _d 0
+     &      sgsS0(10,10,10,1,1),
+     &      sgsS1(10,10,10,1,1),
+     &      sgsS (10,10,10,1,1),
+     &      sgsBWght, sgsAWght, 0. _d 0
         ENDIF
 
         _END_MASTER( myThid )
       ENDIF
 #endif /* ALLOW_DEBUG */
 
-C endif for periodicForcing
+C endif for sgsExternalForcing
       ENDIF
 
 #endif /* EXCLUDE_FFIELDS_LOAD */
