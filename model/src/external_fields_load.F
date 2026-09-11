@@ -369,6 +369,12 @@ CHL   New block for SGS forcing
       IF ( sgsExternalForcing ) THEN
 
 C--   Now calculate whether it is time to update the forcing arrays
+
+CHL We use the hack "myTime + 0.5 _d 0 * externForcingPeriod"
+CHL in order to have
+CHL t = 0 -> record 1 exactly
+CHL 0 < t < 1 day -> interpolate record 1 -> record 2
+CHL and so on...
       CALL GET_PERIODIC_INTERVAL(
      O                  sgsIntimeP, sgsIntime0, sgsIntime1,
      O                  sgsBWght, sgsAWght,
@@ -377,14 +383,17 @@ C--   Now calculate whether it is time to update the forcing arrays
      I                  myTime + 0.5 _d 0 * externForcingPeriod,
      I                  myThid )
 
+CHL Hack part II, correct the weights
       sgsBWght = 1. _d 0 - sgsBWght
       sgsAWght = 1. _d 0 - sgsAWght
 
 #ifdef ALLOW_DEBUG
-      WRITE(standardMessageUnit,'(A,I10,A,3I5,A,2F14.10)')
+      IF ( debugLevel.GE.debLevC ) THEN
+        WRITE(standardMessageUnit,'(A,I10,A,3I5,A,2F14.10)')
      &   ' EXTERNAL_FIELDS_LOAD,', myIter,
      &   ' : iP,i0,i1=', sgsIntimeP,sgsIntime0,sgsIntime1,
      &   ' ; Wght=', sgsBWght,sgsAWght
+      ENDIF
 #endif /* ALLOW_DEBUG */
 
       IF ( sgsIntime0 .NE. sgsIntimeP ) THEN
